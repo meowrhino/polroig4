@@ -252,8 +252,10 @@ body {
 
 
 /* -------------------- 9. Splash de benvinguda ----------- */
-/* Overlay full-screen amb una mirilla random centrada. La pàgina ja
-   està muntada al darrere; en clicar la mirilla, fade-out i revela. */
+/* Overlay full-screen amb una mirilla random centrada. El fons és
+   opac des del primer frame (sense fade-in) per no deixar veure la
+   home que es munta al darrere. La mirilla és una imatge circular
+   neta, sense contorn — l'animació de scale-in és l'únic detall. */
 .splash {
   position: fixed;
   inset: 0;
@@ -264,12 +266,15 @@ body {
   cursor: pointer;
   opacity: 1;
   transition: opacity 600ms var(--ease-soft);
-  animation: splash-bg-in 300ms var(--ease-soft);
 }
 .splash.is-leaving {
   opacity: 0;
   pointer-events: none;
 }
+
+/* Mentre el splash està actiu, bloquegem scroll del body perquè
+   l'usuari no scrollegi la home que hi ha al darrere. */
+body.has-splash { overflow: hidden; }
 
 .splash__mirilla {
   width: min(60vw, 60dvh, 360px);
@@ -280,18 +285,16 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   border: 0;
+  padding: 0;
   cursor: pointer;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
   transition:
     transform 0.3s var(--ease-soft),
-    box-shadow 0.3s var(--ease-soft),
     opacity 600ms var(--ease-soft);
   animation: splash-mirilla-in 800ms var(--ease-soft);
 }
 .splash__mirilla:hover,
 .splash__mirilla:focus-visible {
   transform: scale(1.03);
-  box-shadow: 0 0 0 2px var(--color-acento);
   outline: none;
 }
 .splash.is-leaving .splash__mirilla {
@@ -299,10 +302,6 @@ body {
   opacity: 0;
 }
 
-@keyframes splash-bg-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
 @keyframes splash-mirilla-in {
   from { transform: scale(0.7); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }

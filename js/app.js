@@ -123,13 +123,14 @@ async function boot() {
 
   const { slug, lang } = parseHash();
   state.slug = slug;
-  mount(lang, { scrollToSlug: slug, smooth: false });
 
-  // Splash de benvinguda: només si la URL no demana un projecte concret
-  // (deep links #/<slug> o #/<slug>/<lang> salten directes al contingut).
+  // Splash primer (si toca) perquè el fons opac tapi la home des del
+  // primer frame i evitem el flash de "home → splash" durant el mount.
+  // Deep links (#/<slug>...) salten directes al contingut sense splash.
   if (!slug) {
     showSplash({ onEnter: () => {} });
   }
+  mount(lang, { scrollToSlug: slug, smooth: false });
 
   // Canvis manuals al hash o back/forward del navegador. Si la URL nova
   // porta slug, demanem scroll explícit a routeToWithFade; si només

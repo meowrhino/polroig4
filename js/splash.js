@@ -24,6 +24,7 @@ export function showSplash({ onEnter }) {
 
   splash.appendChild(mirilla);
   document.body.appendChild(splash);
+  document.body.classList.add('has-splash');
 
   let dismissed = false;
   function dismiss() {
@@ -32,6 +33,7 @@ export function showSplash({ onEnter }) {
     splash.classList.add('is-leaving');
     setTimeout(() => {
       splash.remove();
+      document.body.classList.remove('has-splash');
       if (typeof onEnter === 'function') onEnter(project.slug);
     }, FADE_OUT);
   }
