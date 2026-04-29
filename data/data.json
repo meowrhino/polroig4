@@ -3,7 +3,10 @@
     "color_acento": "magenta",
     "color_titulo": "red",
     "idioma_defecto": "cat",
-    "idiomas": ["cat", "en"],
+    "idiomas": [
+      "cat",
+      "en"
+    ],
     "titulo_braille": "pol roig",
     "dominio": "polroigvalldosera.com",
     "descripcion_seo": {
@@ -11,19 +14,39 @@
       "en": "Pol Roig Valldosera — space designer and multidisciplinary artist."
     }
   },
-
   "i18n": {
-    "cat": { "ver_mas": "veure més", "leer_mas": "llegir més", "leer_menos": "tancar", "volver": "tornar", "idiomas": { "cat": "cat", "en": "en" } },
-    "en":  { "ver_mas": "view more", "leer_mas": "read more",  "leer_menos": "close",  "volver": "back",   "idiomas": { "cat": "cat", "en": "en" } }
+    "cat": {
+      "ver_mas": "veure més",
+      "leer_mas": "llegir més",
+      "leer_menos": "tancar",
+      "volver": "tornar",
+      "idiomas": {
+        "cat": "cat",
+        "en": "en"
+      }
+    },
+    "en": {
+      "ver_mas": "view more",
+      "leer_mas": "read more",
+      "leer_menos": "close",
+      "volver": "back",
+      "idiomas": {
+        "cat": "cat",
+        "en": "en"
+      }
+    }
   },
-
   "proyectos": [
     {
       "slug": "concierto-barroco",
       "nombre": "Concierto Barroco",
       "grupos": [
         {
-          "slideshow": ["1.webp", "2.webp", "3.webp"],
+          "slideshow": [
+            "1.webp",
+            "2.webp",
+            "3.webp"
+          ],
           "titulo": "Concierto Barroco",
           "texto": [
             {
@@ -44,13 +67,16 @@
         }
       ]
     },
-
     {
       "slug": "eliza",
       "nombre": "Eliza",
       "grupos": [
         {
-          "slideshow": ["1.webp", "2.webp", "3.webp"],
+          "slideshow": [
+            "1.webp",
+            "2.webp",
+            "3.webp"
+          ],
           "titulo": "Eliza",
           "texto": [
             {
@@ -71,13 +97,16 @@
         }
       ]
     },
-
     {
       "slug": "ofrena-musical",
       "nombre": "Ofrena Musical",
       "grupos": [
         {
-          "slideshow": ["1.webp", "2.webp", "3.webp"],
+          "slideshow": [
+            "1.webp",
+            "2.webp",
+            "3.webp"
+          ],
           "titulo": "Ofrena Musical",
           "texto": [
             {
@@ -98,14 +127,20 @@
         }
       ]
     },
-
     {
       "slug": "escenografias",
       "nombre": "Escenografies",
       "grupos": [
         {
-          "slideshow": ["teatro-1.webp", "teatro-2.webp", "teatro-3.webp"],
-          "titulo": { "cat": "Espais per al teatre", "en": "Spaces for theatre" },
+          "slideshow": [
+            "teatro-1.webp",
+            "teatro-2.webp",
+            "teatro-3.webp"
+          ],
+          "titulo": {
+            "cat": "Espais per al teatre",
+            "en": "Spaces for theatre"
+          },
           "texto": [
             {
               "cat": "En el teatre, la pràctica de Pol Roig es mou entre la dramatúrgia de l'espai i la direcció d'art. Les seves col·laboracions amb Lucia del Greco (Pura Passió, Els Encantats), Toni Casares (Expulsió), Ester Guntín (Quiso Negro) o Paula Blanco (Nomen Nescio) mostren una manera d'entendre l'escena com a matèria primera: estructura que dona forma al text abans que el text la demani.",
@@ -120,8 +155,13 @@
           ]
         },
         {
-          "slideshow": ["musica-1.webp"],
-          "titulo": { "cat": "Espais per a la música", "en": "Spaces for music" },
+          "slideshow": [
+            "musica-1.webp"
+          ],
+          "titulo": {
+            "cat": "Espais per a la música",
+            "en": "Spaces for music"
+          },
           "texto": [
             {
               "cat": "A la música, l'espai no acompanya la cançó: la construeix. La gira Spanish Leather de Guitarricadelafuente va desplegar un dispositiu escènic on la llum i la matèria funcionaven com a instruments més del concert. La pràctica de Pol Roig en aquest terreny entén que un concert és també una imatge en moviment.",
@@ -136,8 +176,13 @@
           ]
         },
         {
-          "slideshow": ["dansa-1.webp"],
-          "titulo": { "cat": "Espais per a la dansa", "en": "Spaces for dance" },
+          "slideshow": [
+            "dansa-1.webp"
+          ],
+          "titulo": {
+            "cat": "Espais per a la dansa",
+            "en": "Spaces for dance"
+          },
           "texto": [
             {
               "cat": "En la dansa, el cos reclama un espai que no li faci ombra. La pràctica de Pol Roig en aquest camp proposa dispositius que són alhora paisatge i partitura: una arquitectura que es llegeix en el moviment. Biterna (IT Dansa, 2024) és un exemple d'aquest diàleg entre coreografia i matèria.",
@@ -152,7 +197,9 @@
           ]
         },
         {
-          "slideshow": ["passacaglia-1.webp"],
+          "slideshow": [
+            "passacaglia-1.webp"
+          ],
           "titulo": "Passacaglia",
           "texto": [
             {
@@ -168,7 +215,9 @@
           ]
         },
         {
-          "slideshow": ["euroscoria-1.webp"],
+          "slideshow": [
+            "euroscoria-1.webp"
+          ],
           "titulo": "Euroscoria",
           "texto": [
             {
@@ -185,13 +234,16 @@
         }
       ]
     },
-
     {
       "slug": "bio",
       "nombre": "Pol Roig Valldosera",
       "grupos": [
         {
-          "slideshow": ["1.webp", "2.webp", "3.webp"],
+          "slideshow": [
+            "1.webp",
+            "2.webp",
+            "3.webp"
+          ],
           "titulo": "Pol Roig Valldosera",
           "texto": [
             {
@@ -216,14 +268,20 @@
         }
       ]
     },
-
     {
       "slug": "otros-proyectos",
       "nombre": "Altres projectes",
       "grupos": [
         {
-          "slideshow": ["1.webp", "2.webp", "3.webp"],
-          "titulo": { "cat": "Altres projectes", "en": "Other projects" },
+          "slideshow": [
+            "1.webp",
+            "2.webp",
+            "3.webp"
+          ],
+          "titulo": {
+            "cat": "Altres projectes",
+            "en": "Other projects"
+          },
           "texto": [
             {
               "cat": "Una selecció de treballs que no caben en cap categoria estricta: instal·lacions, accions performatives, pavellons i peces editorials. El denominador comú és l'atenció a l'espai com a experiència cognitiva.",
