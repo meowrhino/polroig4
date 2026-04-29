@@ -6,12 +6,13 @@
 //   #/<slug>                → home, scroll al projecte <slug>
 //   #/<slug>/<lang>         → home, scroll a <slug> + idioma
 //
-// Canviar idioma fa rerender amb fade i preserva el slug a la URL.
-// Clicar un link de la llista inline fa scroll smooth i actualitza la URL
-// sense rerender.
+// Canviar idioma fa rerender amb fade i preserva la posició de scroll.
+// Clicar un link de la llista de projectes fa scroll smooth a la secció
+// i actualitza la URL sense rerender.
 
 import { loadData, getData, resolveLang, findProject } from './data.js';
 import { renderHome } from './home.js';
+import { showSplash } from './splash.js';
 
 const root = document.getElementById('app');
 
@@ -83,16 +84,29 @@ function scrollToProject(slug, smooth = true) {
 }
 
 // ---- Canvi d'idioma amb fade ----
+// Per defecte preservem la posició de scroll: si l'usuari està a meitat
+// d'escenografies i clica el switch, no volem que salti a l'últim slug
+// clicat. Si en canvi la URL nova porta un slug explícit (e.g. algú
+// enganxa #/eliza/en), passem opts.scrollToSlug i scrollejem allà.
 const FADE_DUR = 200;
-async function routeToWithFade(newLang) {
+async function routeToWithFade(newLang, opts = {}) {
   if (newLang === state.lang) return;
+
+  const savedScrollY = opts.scrollToSlug ? null : window.scrollY;
+
   root.classList.add('is-fading');
   await new Promise(r => setTimeout(r, FADE_DUR));
 
   const slug = state.slug;
   const newHash = slug ? `#/${slug}/${newLang}` : `#/${newLang}`;
   history.replaceState(null, '', newHash);
-  mount(newLang, { scrollToSlug: slug, smooth: false });
+
+  if (opts.scrollToSlug) {
+    mount(newLang, { scrollToSlug: opts.scrollToSlug, smooth: false });
+  } else {
+    mount(newLang);
+    if (savedScrollY !== null) window.scrollTo(0, savedScrollY);
+  }
 
   void root.offsetHeight;
   root.classList.remove('is-fading');
@@ -103,21 +117,34 @@ async function boot() {
   await loadData();
   applyConfig();
 
+  // Evitem que el browser intenti restaurar el scroll en reloads — així
+  // amb splash actiu no veiem un flash a meitat de la pàgina.
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
   const { slug, lang } = parseHash();
   state.slug = slug;
   mount(lang, { scrollToSlug: slug, smooth: false });
 
-  // Canvis manuals al hash o back/forward del navegador. Sempre
-  // actualitzem state.slug primer perquè routeToWithFade el llegirà
-  // per fer scroll a la posició correcta després del rerender.
+  // Splash de benvinguda: només si la URL no demana un projecte concret
+  // (deep links #/<slug> o #/<slug>/<lang> salten directes al contingut).
+  if (!slug) {
+    showSplash({ onEnter: () => {} });
+  }
+
+  // Canvis manuals al hash o back/forward del navegador. Si la URL nova
+  // porta slug, demanem scroll explícit a routeToWithFade; si només
+  // canvia l'idioma, preservem la posició de scroll actual.
   window.addEventListener('hashchange', () => {
     const next = parseHash();
+    const slugChanged = next.slug !== state.slug;
+    const langChanged = next.lang !== state.lang;
     state.slug = next.slug;
-    if (next.lang !== state.lang) {
-      routeToWithFade(next.lang);
+
+    if (langChanged) {
+      routeToWithFade(next.lang, (slugChanged && next.slug) ? { scrollToSlug: next.slug } : {});
       return;
     }
-    if (next.slug) scrollToProject(next.slug, true);
+    if (slugChanged && next.slug) scrollToProject(next.slug, true);
   });
 }
 

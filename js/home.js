@@ -1,14 +1,20 @@
 // home.js — única vista de polroig4. Renderitza:
-//   1) Capçalera (selector idioma + braille)
-//   2) Llista inline de projectes (links àncora)
-//   3) Totes les seccions de projecte renderitzades en seqüència,
-//      cada una amb els seus grups (slideshow, títol, text, desplegable),
-//      seguint la mateixa lògica que data.json descriu.
+//   1) Capçalera (switch idioma + braille)
+//   2) Llista vertical de projectes (links que fan scroll a la secció)
+//   3) Totes les seccions de projecte renderitzades en seqüència, cada
+//      una amb una eyebrow (nom del projecte) i els seus grups
+//      (slideshow, títol, text, desplegable), seguint la mateixa lògica
+//      que data.json descriu.
 
-import { getData, pickLang, imgPath, t } from './data.js';
+import { getData, pickLang, imgPath, t, setFavicon } from './data.js';
 import { createHeader } from './header.js';
 import { createSlideshow } from './slideshow.js';
 import { createDesplegable } from './desplegable.js';
+
+// Observer que actualitza el favicon segons quin projecte està en
+// pantalla. Cada rerender (canvi d'idioma) crea un nou observer; el
+// previ es desconnecta per no tenir referències a DOM antic.
+let _favObserver = null;
 
 export function renderHome({ root, lang, onChangeLang, onScrollTo }) {
   const data = getData();
@@ -21,19 +27,21 @@ export function renderHome({ root, lang, onChangeLang, onScrollTo }) {
   // 1) Capçalera
   home.appendChild(createHeader({ lang, onChangeLang }));
 
-  // 2) Llista inline + 3) seccions
+  // 2) Llista vertical + 3) seccions
   const main = document.createElement('main');
   main.className = 'home__main';
 
-  // ---- Llista inline de projectes ----
+  // ---- Llista vertical de projectes ----
   const nav = document.createElement('nav');
   nav.className = 'proyectos-nav';
   nav.setAttribute('aria-label', 'projectes');
 
-  const navList = document.createElement('p');
+  const navList = document.createElement('ul');
   navList.className = 'proyectos-nav__list';
 
-  projects.forEach((p, i) => {
+  projects.forEach((p) => {
+    const li = document.createElement('li');
+
     const a = document.createElement('a');
     a.className = 'proyectos-nav__link';
     a.href = `#/${p.slug}/${lang}`;
@@ -42,23 +50,28 @@ export function renderHome({ root, lang, onChangeLang, onScrollTo }) {
       ev.preventDefault();
       onScrollTo(p.slug);
     });
-    navList.appendChild(a);
-    if (i < projects.length - 1) {
-      const sep = document.createElement('span');
-      sep.className = 'proyectos-nav__sep';
-      sep.textContent = ', ';
-      navList.appendChild(sep);
-    }
+
+    li.appendChild(a);
+    navList.appendChild(li);
   });
 
   nav.appendChild(navList);
   main.appendChild(nav);
 
   // ---- Seccions de projecte ----
+  // Cada projecte arrenca amb una "eyebrow" amb el seu nom (muted, petit):
+  // serveix de marcador visual de canvi de projecte i és especialment útil
+  // en projectes amb múltiples grups (escenografies → 5 grups), on els
+  // títols dels grups no coincideixen amb el nom del projecte.
   for (const p of projects) {
     const section = document.createElement('section');
     section.className = 'proyecto';
     section.id = `proyecto-${p.slug}`;
+
+    const eyebrow = document.createElement('p');
+    eyebrow.className = 'proyecto__eyebrow';
+    eyebrow.textContent = pickLang(p.nombre, lang);
+    section.appendChild(eyebrow);
 
     for (const grupo of (p.grupos || [])) {
       const groupEl = renderGrupo(grupo, p.slug, lang);
@@ -70,6 +83,27 @@ export function renderHome({ root, lang, onChangeLang, onScrollTo }) {
 
   home.appendChild(main);
   root.appendChild(home);
+
+  // ---- Favicon dinàmic ----
+  // Inicial: primer projecte. Després, observem cada secció i canviem
+  // el favicon quan una entra a la "zona activa" (terç central del
+  // viewport). Així el tab reflecteix el projecte que l'usuari està
+  // mirant a mesura que fa scroll.
+  setFavicon(projects[0].slug);
+  if (_favObserver) _favObserver.disconnect();
+  _favObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        const slug = entry.target.id.replace(/^proyecto-/, '');
+        if (slug) setFavicon(slug);
+      }
+    }
+  }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+  for (const p of projects) {
+    const el = document.getElementById(`proyecto-${p.slug}`);
+    if (el) _favObserver.observe(el);
+  }
 }
 
 function renderGrupo(grupo, slug, lang) {

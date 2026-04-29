@@ -42,6 +42,18 @@ export function imgPath(slug, filename) {
   return `data/${slug}/img/${filename}`;
 }
 
+// Path a la mirilla d'un projecte (convenció: data/<slug>/mirilla.webp).
+export function mirillaPath(slug) {
+  return `data/${slug}/mirilla.webp`;
+}
+
+// Actualitza el <link rel="icon" id="favicon"> amb la mirilla del slug.
+export function setFavicon(slug) {
+  const link = document.getElementById('favicon')
+            || document.querySelector('link[rel="icon"]');
+  if (link) link.href = mirillaPath(slug);
+}
+
 // Text d'UI traduït. Retorna '' si no existeix la clau.
 export function t(key, lang) {
   return _data?.i18n?.[lang]?.[key] ?? '';

@@ -1,7 +1,7 @@
 /* ============================================================
    polroig4 — single-page, scroll vertical
-   Sense roda ni mirilla. Capçalera amb selector d'idioma a
-   l'esquerra i braille a la dreta. Llista inline de projectes
+   Sense roda ni mirilla. Capçalera amb switch d'idioma a
+   l'esquerra i braille a la dreta. Llista vertical de projectes
    i totes les seccions renderitzades en seqüència.
    ============================================================ */
 
@@ -52,36 +52,31 @@ body {
 
 
 /* -------------------- 3. Header ------------------------- */
+/* Header bounded igual que el main: max-width centrat. Ja no és sticky;
+   queda al principi del flow i scrollea amb la pàgina. */
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  height: var(--h-header);
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  min-height: var(--h-header);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0 1.25rem;
+  padding: 1rem 1.25rem 0;
   background: var(--bg);
 }
 
-/* Selector d'idioma a l'esquerra */
-.lang {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-.lang__btn {
-  font-size: 0.85rem;
+/* Switch d'idioma — un sol botó que mostra l'idioma "següent" */
+.lang__switch {
+  font-size: 0.95rem;
   letter-spacing: 0.06em;
-  color: var(--muted);
+  color: var(--color-acento);
   padding: 0.25rem 0.4rem;
-  transition: color 0.2s var(--ease-soft);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s var(--ease-soft);
 }
-.lang__btn:hover            { color: var(--fg); }
-.lang__btn.is-active        { color: var(--color-acento); }
-.lang__btn.is-active:hover  { color: var(--color-acento); }
-.lang__sep                  { color: var(--muted); user-select: none; }
+.lang__switch:hover { border-bottom-color: var(--color-acento); }
 
 /* Braille a la dreta */
 .braille {
@@ -128,30 +123,27 @@ body {
   padding: 2rem 1.25rem 4rem;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 6rem;
 }
 
 
-/* -------------------- 5. Llista inline de projectes ----- */
-.proyectos-nav {
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
+/* -------------------- 5. Llista vertical de projectes --- */
 .proyectos-nav__list {
-  display: block;
-  word-spacing: 0.05em;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 .proyectos-nav__link {
+  display: inline-block;
+  font-size: 1.35rem;
+  line-height: 1.4;
   color: var(--color-acento);
   border-bottom: 1px solid transparent;
   transition: border-color 0.2s var(--ease-soft);
 }
 .proyectos-nav__link:hover {
   border-bottom-color: var(--color-acento);
-}
-.proyectos-nav__sep {
-  color: var(--muted);
-  user-select: none;
 }
 
 
@@ -160,8 +152,18 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  /* perquè en saltar a una àncora no quedi tapat per la sticky header */
-  scroll-margin-top: calc(var(--h-header) + 0.5rem);
+  /* petit marge en saltar a una àncora — el header ja no és sticky però
+     deixem aire perquè la secció no quedi pegada al top */
+  scroll-margin-top: 1rem;
+}
+
+/* "Eyebrow" — etiqueta petita amb el nom del projecte, marcador visual
+   de canvi de secció. Va sobre el primer grup; en projectes multi-grup
+   ajuda a saber que tots els grups pertanyen al mateix projecte. */
+.proyecto__eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  color: var(--muted);
 }
 
 .grupo { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -249,7 +251,65 @@ body {
 .desplegable__toggle:hover { border-bottom-color: var(--color-acento); }
 
 
-/* -------------------- 9. Reduced motion ------------------ */
+/* -------------------- 9. Splash de benvinguda ----------- */
+/* Overlay full-screen amb una mirilla random centrada. La pàgina ja
+   està muntada al darrere; en clicar la mirilla, fade-out i revela. */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 600ms var(--ease-soft);
+  animation: splash-bg-in 300ms var(--ease-soft);
+}
+.splash.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.splash__mirilla {
+  width: min(60vw, 60dvh, 360px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: #111;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+  transition:
+    transform 0.3s var(--ease-soft),
+    box-shadow 0.3s var(--ease-soft),
+    opacity 600ms var(--ease-soft);
+  animation: splash-mirilla-in 800ms var(--ease-soft);
+}
+.splash__mirilla:hover,
+.splash__mirilla:focus-visible {
+  transform: scale(1.03);
+  box-shadow: 0 0 0 2px var(--color-acento);
+  outline: none;
+}
+.splash.is-leaving .splash__mirilla {
+  transform: scale(1.6);
+  opacity: 0;
+}
+
+@keyframes splash-bg-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes splash-mirilla-in {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+
+/* -------------------- 10. Reduced motion ----------------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -259,11 +319,11 @@ body {
 }
 
 
-/* -------------------- 10. Desktop tweaks ---------------- */
+/* -------------------- 11. Desktop tweaks ---------------- */
 @media (min-width: 900px) {
   .home__main {
     padding: 3rem 2rem 6rem;
-    gap: 5rem;
+    gap: 8rem;
   }
   .proyecto { gap: 2.5rem; }
 }
